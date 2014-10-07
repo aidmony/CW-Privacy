@@ -1,0 +1,80 @@
+\newcommand{\deftech}[1]{\textbf{#1}}
+\newcommand\mrel{\mathop{\mathbf{r}}}
+\newcommand\morel{\mathop{\mathbf{r}'}}
+\newcommand\menv{\rho}
+\newcommand\mval{v}
+\newcommand\mans{a}
+\newcommand\mint{i}
+\newcommand\moint{j}
+\newcommand\mbool{b}
+
+\newcommand\plug[2]{#1[#2]}
+
+\newcommand\merr{r}
+
+\newcommand\mctx{\mathcal{C}}
+\newcommand\mectx{\mathcal{E}}
+\newtheorem{theorem}{Theorem}
+\newcommand\Err{\mathit{Err}}
+\newcommand\Plus{\mathit{Plus}}
+\newcommand\Mult{\mathit{Mult}}
+\newcommand\Succ{\mathit{Succ}}
+\newcommand\Pred{\mathit{Pred}}
+\newcommand\Eq{\mathit{Eq}}
+\newcommand\True{\mathit{True}}
+\newcommand\False{\mathit{False}}
+\newcommand\If{\mathit{If}}
+\newcommand\Div{\mathit{Div}}
+
+\newcommand\reduce{\mathop{\mathbf{b}}}
+
+\newcommand\areducename{\mathbf{a}}
+\newcommand\areduce[2]{#1\;\areducename\;#2}
+
+\newcommand\step{\rightarrow_\mathbf{b}}
+\newcommand\multistep{\rightarrow^\star_\mathbf{b}}
+
+\newcommand\astdstep{\longmapsto_{\reduce}}
+\newcommand\astdmultistep{\longmapsto^\star_{\reduce}}
+
+\newcommand\breducename{\mathbf{b}}
+\newcommand\errreducename{\mathbf{err}}
+\newcommand\propreducename{\mathbf{prop}}
+\newcommand\bvreducename{\mathbf{bv}}
+\newcommand\bstepname{\rightarrow_{\breducename}}
+\newcommand\bmultistepname{\rightarrow^\star_{\breducename}}
+
+\newcommand\bmultistep[3]{#1\vdash #2\;\bmultistepname\;#3}
+\newcommand\bstdstep[3]{#1\vdash #2\;{\longmapsto_{\breducename}}\;#3}
+\newcommand\bstdmultistep[3]{#1\vdash #2\;{\longmapsto^\star_{\breducename}}\;#3}
+
+\newcommand\breduce[3]{#1 \vdash {#2}\;\breducename\; {#3}}
+\newcommand\errreduce[3]{#1 \vdash {#2}\;\errreducename\; {#3}}
+\newcommand\propreduce[3]{#1 \vdash {#2}\;\propreducename\; {#3}}
+\newcommand\bvreduce[3]{#1 \vdash {#2}\;\bvreducename\; {#3}}
+\newcommand\bstep[3]{#1 \vdash {#2}\;\rightarrow_{\breducename}\; {#3}}
+\newcommand\bclosedstep[2]{{#1}\;\rightarrow_{\breducename}\; {#2}}
+
+\newcommand\laxparstep{\rightrightarrows_\mathbf{a}}
+\newcommand\maxparstep{\rightrightarrows'_\mathbf{a}}
+
+
+\newcommand{\xdown}[1]{X_{#1 \downarrow}}
+\newcommand{\xup}[1]{X_{#1 \uparrow}}
+\newcommand{\xdownk}[2]{X_{#1 \downarrow #2}}
+\newcommand{\xupk}[2]{X_{#1 \uparrow #2}}
+\newcommand{\xblock}[1]{[x_{#1 1}, x_{#1 2} , \dots, x_{#1 \frac{1}{c}}]^{\top}}
+\newcommand{\conpr}[2]{Pr[#1\,|\,#2]}
+\newcommand{\priv}{{\bf priv}(X)}
+\newcommand{\alt}[1]{{\bf alt}(X_{#1})}
+\newcommand{\xbot}[1]{x_{#1 \frac{1}{c}}}
+\newcommand{\cwp}[1]{(\epsilon, \delta, \Delta_{#1}, \Gamma)}
+
+
+\newcommand\Arith{\mathcal{A}}
+\newcommand\Barith{\mathcal{B}}
+
+\newcommand\Var{\mathit{Var}}
+
+\newcommand{\mvar}{x}
+\newcommand\s[1]{\mathit{#1}}

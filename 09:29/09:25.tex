@@ -1,0 +1,231 @@
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+
+
+\input{macro}
+
+\title{Proof}
+%\author{Yi Qian}
+\date{}
+\begin{document}
+
+\maketitle
+
+{\bf Notations.} For each database $X_{i}$ of size $n$, we represent it by $1/c$ blocks (each has $cn$ rows). Let $X_{i}= [x_{i1},x_{i2}, \dots , x_{i \frac{1}{c}}]^{\top}$, where $x_{ij}$ denote the $j$the block in $X_{i}$. Let $X_{i \downarrow} = [x_{i2}, \dots , x_{i \frac{1}{c}}]^{\top}$ and $X_{i \uparrow} = [x_{i1}, \dots , x_{i {(\frac{1}{c}}-1)}]^{\top}$. Let $\Delta =\{D^{n}\}$ denote all distributions over the database, with each row chosen i.i.d. from some $D$. $\Delta_{\downarrow}$ contains $\Delta$ and also the auxiliary information $X_{ \downarrow}$. $\Delta_{\uparrow}$ contains $\Delta$ and also the auxiliary information $X_{ \uparrow}$.
+\\ 
+
+{\bf Result 1. } Assume (1) Mechanism $F$ is $(\epsilon_{\downarrow}, \delta_{\downarrow}, \Delta_{\downarrow}, \Gamma)$-CW private with simulator $sim_{F\downarrow}$; (2) Mechanism $G$ is $(\epsilon_{\uparrow}, \delta_{\uparrow}, \Delta_{\uparrow}, \Gamma)$-CW private with simulator $sim_{G\uparrow}$.
+Then, Mechanism $H(X) = (F(X_{1}), G(X_{2}))$ is $(\epsilon_{\downarrow}+\epsilon_{\uparrow}, \delta_{\downarrow}+\delta_{\uparrow}, \Delta_{2\uparrow}, \Gamma)$-CW private with simulator $(sim_{F\downarrow}, sim_{G\uparrow})$.
+
+
+
+{\bf Proof. } For any set $S=(S_{1}, S_{2})$, we have
+\[
+Pr[H(X) \in S\,|\, X_{2 \uparrow}=z, {{\bf priv}(X)=v} ]
+\]
+(omit ${{\bf priv}(X)=v}$ from now on)
+\[
+= Pr[F(X_{1}, G(X_{2}) \in (S_{1}, S_{2})\,|\, X_{2 \uparrow}=z ]
+\]
+\[
+=Pr[F(x_{11}, z) \in S_{1}, G(z, x_{2 \frac{1}{c}}) \in S_{2} \,|\, X_{2 \uparrow}=z ]
+\]
+Since (1) $F(x_{11}, z)$/$G(z, x_{2 \frac{1}{c}})$ is a (measurable) function on $x_{11}$/$x_{2 \frac{1}{c}}$, where $x_{11}$/$x_{2 \frac{1}{c}}$ is a block of $cn$ rows; (2) $x_{11}$ and $x_{2 \frac{1}{c}}$ are i.i.d. from some $D$, we know $F(x_{11}, z)$ and $G(z, x_{2 \frac{1}{c}})$ are independent with each other. Therefore, we have
+\[
+= Pr[F(x_{11}, z) \in S_{1} \,|\, X_{2 \uparrow}=z ] \cdot Pr[G(z, x_{2 \frac{1}{c}}) \in S_{2}  \,|\, X_{2 \uparrow}=z ] 
+\]
+\[
+=Pr[F(x_{11}, z) \in S_{1} \,|\, X_{1 \downarrow}=z ] \cdot Pr[G(z, x_{2 \frac{1}{c}}) \in S_{2}  \,|\, X_{2 \uparrow}=z ] 
+\]
+\[
+= Pr[F(X_{1}) \in S_{1} \,|\, X_{1 \downarrow}=z ] \cdot Pr[G(X_{2}) \in S_{2}  \,|\, X_{2 \uparrow}=z ] 
+\]
+By the assumptions on $F$ and $G$, we have
+\[
+\leq (e^{\epsilon_{\downarrow}}Pr[sim_{F\downarrow}({\bf alt}(X_{1})) \in S_{1} \,|\, X_{1 \downarrow}=z ] +\delta_{\downarrow}) \cdot (e^{\epsilon_{\uparrow}}Pr[sim_{G\uparrow}({\bf alt}(X_{2})) \in S_{2} \,|\, X_{2 \uparrow}=z ] +\delta_{\uparrow})
+\]
+\[
+\leq e^{\epsilon_{\downarrow}+\epsilon_{\uparrow}} (Pr[sim_{F\downarrow}({\bf alt}(X_{1})) \in S_{1} \,|\, X_{1 \downarrow}=z ] \cdot Pr[sim_{G\uparrow}({\bf alt}(X_{2})) \in S_{2} \,|\, X_{2 \uparrow}=z ]) + (\delta_{\downarrow}+\delta_{\uparrow})
+\]
+\[
+= e^{\epsilon_{\downarrow}+\epsilon_{\uparrow}} (Pr[sim_{F\downarrow}({\bf alt}(x_{11}), {\bf alt}(z)) \in S_{1} \,|\, X_{1 \downarrow}=z ] \cdot Pr[sim_{G\uparrow}({\bf alt}(z), {\bf alt} (x_{2 \frac{1}{c}})) \in S_{2} \,|\, X_{2 \uparrow}=z ]) 
+\]
+\[
++ (\delta_{\downarrow}+\delta_{\uparrow})
+\]
+Notice $sim_{F\downarrow}({\bf alt}(X)$ can be considered as a composed function $sim_{F\downarrow} \circ {\bf alt}$ on $X$. In our case when $X_{1 \downarrow}=X_{2 \uparrow}=z$, $sim_{F\downarrow}({\bf alt}(X_{1})$ is a function on $x_{11}$ and $sim_{G\uparrow}({\bf alt}(X_{2})$ is a function on $x_{2\frac{1}{c}}$. Since $x_{11}$ and $x_{2 \frac{1}{c}}$ are i.i.d. from some $D$, we have the independence. 
+\[
+=e^{\epsilon_{\downarrow}+\epsilon_{\uparrow}} (Pr[sim_{F\downarrow}({\bf alt}(x_{11}), {\bf alt}(z)) \in S_{1}, sim_{G\uparrow}({\bf alt}(z), {\bf alt} (x_{2 \frac{1}{c}})) \in S_{2} \,|\, X_{2 \uparrow}=z ]+ (\delta_{\downarrow}+\delta_{\uparrow})
+\]
+\[
+=e^{\epsilon_{\downarrow}+\epsilon_{\uparrow}} (Pr[(sim_{F\downarrow}({\bf alt}(X_{1})), sim_{G\uparrow}({\bf alt} (X_{2}))) \in (S_{1}, S_{2}) \,|\, X_{2 \uparrow}=z ]+ (\delta_{\downarrow}+\delta_{\uparrow}) \quad \Box
+\]\\
+
+
+
+
+{\bf Result 2} Let $G(X) = (F(X_{1}), F(X_{2}), \dots ,F( X_{t}))$. Let $F: {\cal U}^{n} \rightarrow \mathbb{R}^{d}$, such that $F(X)=\Sigma_{i=1}^{\frac{1}{c}} F(x_{i})$ for all database $X=[x_{1},\dots , x_{\frac{1}{c}}]^{\top} \in {\cal U}^{n}$, where $x_{i}$ is a block of $cn$ rows. Assume (1) Mechanism $F$ is $(\epsilon_{\downarrow}, \delta_{\downarrow}, \Delta_{\downarrow}, \Gamma)$-CW private with simulator $sim_{F\downarrow}$; (2) Mechanism $F$ is $(\epsilon_{\uparrow}, \delta_{\uparrow}, \Delta_{\uparrow}, \Gamma)$-CW private with simulator $sim_{F\uparrow}$. Then, 
+\begin{enumerate}
+\item $G(X)$ is $(t\epsilon_{\downarrow}, t\delta_{\downarrow}+, \Delta_{t\downarrow}, \Gamma)$-CW private with simulator $(sim_{F\downarrow})^{t}$;
+\item $G(X)$ is $((t-1)\epsilon_{\downarrow}+\epsilon_{\uparrow}, (t-1)\delta_{\downarrow}+\delta_{\uparrow}, \Delta_{t\uparrow}, \Gamma)$-CW private with simulator $((sim_{F\downarrow})^{t-1}, sim_{F\uparrow})$;
+\end{enumerate}
+{\bf Additional Notations.} Let $X_{i \downarrow k} = [x_{i (k+1)}, \dots , x_{i \frac{1}{c}}]^{\top}$. We still use $X_{i \downarrow}$ to denote $X_{i \downarrow 1}$. Let $S=(S_{1}, \dots, S_{t-1}, S_{t})$ and $S_{-t} = (S_{1}, \dots, S_{t-1})$. Let $S_{-t}(v)$ denote the set of all $\bf v_{-t}$ such that $({\bf v_{-t}}, v) \in S$.
+\\
+
+{\bf Proof (1). }
+For any set $S=(S_{1}, \dots, S_{t-1}, S_{t})$, we have
+\[
+Pr[G(X) \in S\,|\, X_{t\downarrow} =z]
+\]
+\[
+=Pr[(F(X_{1}, \dots, F(X_{t-1})) \in (S_{1},\dots , S_{t-1}), F(X_{t}) \in S_{t}\,|\, X_{t\downarrow} =z]
+\]
+\[
+=\Pi_{j=1}^{t} Pr[F(X_{j}) \in S_{j}\,|\, F(X_{j+1}) \in S_{j=1} , \dots, F(X_{t}) \in S_{t}, X_{t\downarrow}=z]
+\]
+For ease of analysis, assume $t < n$. That is, $X_{1}$ and $X_{t}$ still have at least one overlapped row. For each $j$, we have
+\[
+=Pr[F(x_{j1}, \dots , x_{j(t+1-j)},  X_{t\downarrow (t+1-j)}) \in S_{j} \,|\, F(X_{j+1}) \in S_{j=1} , \dots, F(X_{t}) \in S_{t}, X_{t\downarrow}=z]
+\]
+\[
+=\Sigma_{v_{j+1} \in S_{j+1}} Pr[F(x_{j1}, \dots , x_{j(t+1-j)},  X_{t\downarrow (t+1-j)}) \in S_{j} \,|\, F(X_{j+1})=v_{j+1} , F(X_{j+2})\in S_{j+2},  
+\]
+\[
+\dots, F(X_{t}) \in S_{t},X_{t\downarrow}=z] \cdot Pr[F(X_{j+1})=v_{j+1}]
+\]
+Notice that $F(x_{j1}, \dots , x_{j(t+1-j)},  X_{t\downarrow (t+1-j)}) = F(x_{j1}) + F(X_{j+1}) - F(x_{(j+1)\frac{1}{c}})$, of which $x_{(j+1)\frac{1}{c}} \in X_{t\downarrow}$. Let $F(x_{(j+1)\frac{1}{c}}) = v_{j+1}^{*}$, and we have
+\[
+=\Sigma_{v_{j+1} \in S_{j+1}} Pr[(F(x_{j1}) + F(X_{j\downarrow})  ) \in S_{j} \,|\, F(X_{j\downarrow}) =v_{j+1} - v_{j+1}^{*},  F(X_{j+1})=v_{j+1} , F(X_{j+2})\in S_{j+2},  
+\]
+\[
+\dots, F(X_{t}) \in S_{t},X_{t\downarrow}=z] \cdot Pr[F(X_{j+1})=v_{j+1}]
+\]
+Notice block $x_{j1}$ is independent w.r.t. all the conditions, and $X_{j} \cap X_{t\downarrow} = X_{t\downarrow (t+1-j)})$. Let $X_{t\downarrow (t+1-j)}) =z_{j}$, we have
+\[
+=\Sigma_{v_{j+1} \in S_{j+1}} Pr[(F(X_{j}  ) \in S_{j} \,|\, F(X_{j\downarrow}) =(v_{j+1} - v_{j+1}^{*})
+\]
+\[
+,  X_{t\downarrow (t+1-j)}=z_{j}] \cdot Pr[F(X_{j+1})=v_{j+1}]
+\]
+\\
+{\bf Not finished. Not correct below}
+\\
+\\
+Since $F$ is $(\epsilon_{\downarrow}, \delta_{\downarrow}, \Delta_{\downarrow}, \Gamma)$-CW private for all database $X$, $F$ is $(\epsilon_{\downarrow}, \delta_{\downarrow}, (\Delta_{\downarrow} \cup F(X_\downarrow)), \Gamma)$-CW private, because $F(X_{\downarrow})$ does not provide any unknown auxiliary information. By the definition of CW-privacy, $F$ should be $(\epsilon_{\downarrow}, \delta_{\downarrow}, \Delta^{'}, \Gamma)$-CW private, for any $\Delta^{'}$ with less auxiliary information than $X_{\downarrow} \cup F(X_{\downarrow})$. Then, F is $(\epsilon_{\downarrow}, \delta_{\downarrow}, (\Delta_{\downarrow k} \cup F(X_\downarrow)), \Gamma)$-CW private for any $k \in [1/c]$, where $\Delta_{\downarrow k}$ contains auxiliary information $X_{\downarrow k}$. Let $F$ be $(\epsilon_{\downarrow}, \delta_{\downarrow}, (\Delta_{\downarrow k} \cup F(X_\downarrow)), \Gamma)$-CW private with simulator $sim_{F\downarrow k}$.
+\[
+\leq \Sigma_{v_{j+1} \in S_{j+1}} (e^{\epsilon_\downarrow} Pr[ sim_{F\downarrow j} ({\bf alt} (X_{j})) \in S_{j} \,|\, F(X_{j\downarrow}) =(v_{j+1} - v_{j+1}^{*})
+\]
+\[
+,  X_{t\downarrow (t+1-j)}=z_{j}] + \delta_{\downarrow}) \cdot Pr[F(X_{j+1})=v_{j+1}]
+\]
+\[
+=\Sigma_{v_{j+1} \in S_{j+1}} (e^{\epsilon_\downarrow} Pr[ sim_{F\downarrow j} ({\bf alt} (X_{j})) \in S_{j} \,|\,   F(X_{j+1})=v_{j+1} , F(X_{j+2})\in S_{j+2}, 
+\]
+\[
+\dots, F(X_{t}) \in S_{t},X_{t\downarrow}=z]+\delta_{\downarrow}) \cdot Pr[F(X_{j+1})=v_{j+1}]
+\]
+\[
+=e^{\epsilon_\downarrow} Pr[ sim_{F\downarrow j} ({\bf alt} (X_{j})) \in S_{j} \,|\,   F(X_{j+1}) \in S_{j+1} , F(X_{j+2})\in S_{j+2}, 
+\]
+\[
+\dots, F(X_{t}) \in S_{t},X_{t\downarrow}=z]+\delta_{\downarrow}
+\]
+
+ with simulator $sim_{F\downarrow}$, we know for all database $X \in {\cal U}^{n}$, for all $v \in \mathbb{R}^{d}$ in the range of $F(X_{\downarrow})$ and for all set $S \subseteq \mathbb{R}^{d}$
+\[
+Pr[F(x_{1})+F(X_{\downarrow}) \in S | X_{\downarrow} =z, F(X_{\downarrow}) =v] =Pr[F(x_{1})+F(X_{\downarrow}) \in S | X_{\downarrow} =z] 
+\]
+\[
+\leq Pr[sim_{F\downarrow} ({\bf alt}(X)) \in S | X_{\downarrow} =z]
+\]
+
+
+
+
+
+\[
+=Pr[ (F(x_{11},\dots, x_{1t}, X_{1 \downarrow (t)}),  \dots, F(x_{(t-1)1}, x_{(t-1)2} X_{(t-1)\downarrow2}),, F(x_{t1}, X_{t \downarrow})) \in S_{t}\,|\, X_{t\downarrow} =z]
+\]
+Notice that block $x_{ij} = x_{i'j'}$ iff $i+j=i'+j'$. 
+\[
+= \Pi_{j=1}^{t} Pr[F(x_{j1}, \dots , x_{j(t+1-j)}, X_{t\downarrow (t+1-j)}) \,|\, ]
+\]
+Let $${\cal H}=(F(x_{11},\dots,  x_{1(t-1)}, X_{1 \downarrow (t-1)}),   \dots,F(x_{(t-2)1}, x_{(t-2)2}, X_{(t-1)\downarrow 2}), F(x_{(t-1)1}, X_{(t-1)\downarrow})).$$ Given $X_{t\uparrow} =z$, $\cal H$ is a function on $(x_{11},\dots, x_{1(t-1)})$ and $F(x_{(t-1)1}, X_{(t-1)\downarrow}))$ is a function on $x_{(t-1)1}$. Since $x_{(t-1)1}$ is independent from $x_{11},\dots, x_{1(t-1)}$, we have
+\[
+=Pr[ {\cal H} (x_{11},\dots, x_{1(t-1)}) \in S_{-t} |\, X_{t\uparrow} =z] \cdot Pr [F(X_{t\uparrow}, x_{t \frac{1}{c}}) \in S_{t}\,|\, X_{t\uparrow} =z ] 
+\]
+
+
+{\bf Proof (2). }
+For any set $S=(S_{1}, \dots, S_{t-1}, S_{t})$, we have
+\[
+Pr[G(X) \in S\,|\, X_{t\uparrow} =z]
+\]
+\[
+=Pr[(F(X_{1}, \dots, F(X_{t-1})) \in (S_{1},\dots , S_{t-1}), F(X_{t}) \in S_{t}\,|\, X_{t\uparrow} =z]
+\]
+For ease of analysis, assume $t-1<n$. That is, $X_{1}$ and $X_{t}$ still have at least one overlapped row. 
+\[
+=Pr[ (F(x_{11},\dots, x_{1(t-1)}, X_{1 \downarrow (t-1)}),  \dots,F(x_{(t-2)1}, x_{(t-2)2}, X_{(t-1)\downarrow 2}) , F(x_{(t-1)1}, X_{(t-1)\downarrow})) \in S_{-t}
+\]
+\[
+, F(X_{t\uparrow}, x_{t \frac{1}{c}}) \in S_{t}\,|\, X_{t\uparrow} =z]
+\]
+Notice that block $x_{ij} = x_{i'j'}$ iff $i+j=i'+j'$. Let $${\cal H}=(F(x_{11},\dots,  x_{1(t-1)}, X_{1 \downarrow (t-1)}),   \dots,F(x_{(t-2)1}, x_{(t-2)2}, X_{(t-1)\downarrow 2}), F(x_{(t-1)1}, X_{(t-1)\downarrow})).$$ Given $X_{t\uparrow} =z$, $\cal H$ is a function on $(x_{11},\dots, x_{1(t-1)})$ and $F(x_{(t-1)1}, X_{(t-1)\downarrow}))$ is a function on $x_{(t-1)1}$. Since $x_{(t-1)1}$ is independent from $x_{11},\dots, x_{1(t-1)}$, we have
+\[
+=Pr[ {\cal H} (x_{11},\dots, x_{1(t-1)}) \in S_{-t} |\, X_{t\uparrow} =z] \cdot Pr [F(X_{t\uparrow}, x_{t \frac{1}{c}}) \in S_{t}\,|\, X_{t\uparrow} =z ] 
+\]
+{\bf Lemma. } For $t=1,\dots, n$ and all sets $S_{-t}=(S_{1}, \dots , S_{t-1})$,
+\[Pr[{\cal H} (x_{11},\dots, x_{1(t-1)})  \in S_{-t} |\, X_{t\uparrow} =z ]\]
+\[ \leq e^{\downarrow} Pr [(sim_{F\downarrow} ({\bf alt}(X_{1}) ), \dots, sim_{F\downarrow} ({\bf alt}(X_{t-1}))) \in S_{-t} \,|\, X_{t\uparrow} =z ] + \delta_{\downarrow}.\]
+
+{\bf Proof. } We prove this lemma inductively. The base case when $t=1$ is already shown above. 
+
+Assume for all sets $S_{-(t-1)}=(S_{1}, \dots , S_{t-2})$,
+\[Pr[{\cal H} (x_{11},\dots, x_{1(t-2)})  \in S_{-(t-1)} |\, X_{(t-1)\uparrow} =z' ]\]
+\[ \leq e^{\downarrow} Pr [(sim_{F\downarrow} ({\bf alt}(X_{1}) ), \dots, sim_{F\downarrow} ({\bf alt}(X_{t-2}))) \in S_{-(t-1)} \,|\, X_{(t-1)\uparrow} =z' ] + \delta_{\downarrow}.\]
+
+We have 
+\[
+Pr[{\cal H} (x_{11},\dots, x_{1(t-1)})  \in S_{-t} |\, X_{t\uparrow} =z ]
+\]
+\[
+=\Sigma_{v\in S_{t-1}} Pr[{\cal H} (x_{11},\dots, x_{1(t-2)})  \in S_{-(t-1)}(v) |\, x_{1(t-1)}=v, X_{t\uparrow} =z ]  
+\]
+\[
+\cdot Pr[x_{1(t-1)}=v \,|\, X_{t\uparrow} =z]
+\]
+Notice that $X_{t-1}=[x_{(t-1)1}, X_{t\uparrow} ]^{\top}=[x_{1(t-1)}, X_{t\uparrow} ]^{\top}=[X_{(t-1)\uparrow}, x_{(t-1) \frac{1}{c}}]^{\top}$. Let $[X_{(t-1)\uparrow}, x_{(t-1) \frac{1}{c}}]^{\top} =[z', v']^{\top}$, we have
+\[
+=\Sigma_{v\in S_{t-1}} Pr[{\cal H} (x_{11},\dots, x_{1(t-2)})  \in S_{-(t-1)}(v) |\, X_{(t-1)\uparrow}=z', x_{(t-1) \frac{1}{c}}=v' ]  
+\]
+\[
+\cdot Pr[x_{1(t-1)}=v \,|\, X_{t\uparrow} =z]
+\]
+Since ${\cal H} (x_{11},\dots, x_{1(t-2)})$ is independent with $x_{(t-1) \frac{1}{c}}$, we have
+\[
+=\Sigma_{v\in S_{t-1}} Pr[{\cal H} (x_{11},\dots, x_{1(t-2)})  \in S_{-(t-1)}(v)\, |\, X_{(t-1)\uparrow}=z' ]  
+\]
+\[
+\cdot Pr[x_{1(t-1)}=v \,|\, X_{t\uparrow} =z]
+\]
+By the inductive assumption,
+\[
+\leq \Sigma_{v\in S_{t-1}} (e^{\epsilon_{\downarrow}}Pr[(sim_{F\downarrow} ({\bf alt}(X_{1}) ), \dots, sim_{F\downarrow} ({\bf alt}(X_{t-2}))) \in S_{-(t-1)} (v)\,|\, X_{(t-1)\uparrow}=z' ]  +\delta_{\downarrow})
+\]
+\[
+\cdot Pr[x_{1(t-1)}=v \,|\, X_{t\uparrow} =z]
+\]
+Again, since none of $sim_{F\downarrow} ({\bf alt}(X_{i}) )$ depends on $x_{(t-1) \frac{1}{c}}$, the condition on $X_{(t-1)\uparrow}=z'$ can be substituted with $[X_{(t-1)\uparrow}=z', x_{(t-1) \frac{1}{c}}=v']^{\top} = [x_{1(t-1)}=v, X_{(t)\uparrow}=z]^{\top}$.
+\[
+=e^{\epsilon_{\downarrow}} (\Sigma_{v\in S_{t-1}} Pr[(sim_{F\downarrow} ({\bf alt}(X_{1}) ), \dots, sim_{F\downarrow} ({\bf alt}(X_{t-2}))) \in S_{-(t-1)} (v)\,|\,  x_{1(t-1)}=v, X_{(t)\uparrow}=z ]
+\]
+\[
+\cdot Pr[x_{1(t-1)}=v \,|\, X_{t\uparrow} =z]) + \delta_{\downarrow}.
+\]
+ \end{document}

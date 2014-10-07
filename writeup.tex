@@ -1,0 +1,145 @@
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+
+
+\input{macro}
+
+\title{Streaming CW-Pivacy}
+\date{\today}
+\begin{document}
+\maketitle
+{\bf Problem Setting} \\
+Let $X$ be a database in the streaming setting. Let $X_{i}$ represent the portion of $X$ that is currently held at time step $i$. We assume that at each time step, a fraction of $c$ of the database is replaced. We assume the oldest rows are always the ones replaced, and that $X$ has row drown i.i.d. from some distribution $D$. Let $n$ be the size of each $X_{i}$. This means that the first $n$ rows of $X$ constitute $X_{1}$, rows $cn+1$ through $cn+n$ constitute $X_{2}$, and so forth. $X$ has size $n+cn(t-1)$, where $t$ is the total number of time steps being considered. $1/c$ is the total number of time steps a given row will be present for.
+
+We now consider a query $F: \, {\cal U}^{n} \rightarrow \mathbb{R}^{d}$ on each $X_{i}$. 
+Let $D_{F}$ be the distribution that draws a database of size $n$, with each row chosen i.i.d. from $D$. Let $aux_{F}$ be $F$'s auxiliary information, which consists of the first (or last) $(1-c)n$ rows of the database. Now, assume $F$ is $(\epsilon, \delta, \Delta_{F}, \Gamma)$-CW private with some simulator $sim_{F}$, where $\Delta$ chooses the database according to $D_{F}$ and the auxiliary information is $aux_{F}$ as stated above.
+
+Let $G(X) = (F(X_{1}), F(X_{2}) , \dots, F(X_{t}))$ be the composite query that runs $F$ at each time step. We show $G$ is $(t\epsilon, t \delta, \Delta, \Gamma)$ -CW private.
+\\
+\\
+{\bf Notations }\\
+For each $X_i$ of size $n$, we represent it by $1/c$ blocks (each has $cn$ rows). Namely, let $X_{i}=\xblock{i}$, where $x_{ij}$ denote the $j$th block in $X_{i}$. Let $\xdownk{i}{k} = [x_{i (k+1)}, x_{i (k+2)} , \dots, x_{i \frac{1}{c}}]^{\top}$ and $\xupk{i}{k} = [x_{i 1}, x_{i2} , \dots, x_{i (\frac{1}{c}-k)}]^{\top}$. We use $\xdown{i}$ to denote $\xdownk{i}{1}$ and $\xup{i}$ to denote $\xupk{i}{1}$. Notice that $\xdownk{i}{k} = \xupk{i+k}{k}$ (specifically $\xdown{i} = \xup{i+1}$), which are the shared blocks between $X_{i}$ and $X_{i+k}$.
+
+Let $S=(S_{1}, S_{2}, \dots, S_{t} )$ be any set from $\mathbb {R} ^{d \times t}$, where $S_{j}$ is determined by the values of $(s_{1}, s_{2} , \dots, s_{j-1})$. Let $S_{-t}$ denote set $(S_{1}, S_{2}, \dots, S_{t-1} )$.
+\\
+\\
+{\bf Proof}\\
+We prove it inductively. 
+\begin{enumerate}
+\item The base case is when $G(X) = (F(X_{1}) , F(X_{2}))$. For any set $S= (S_{1}, S_{2})$, we have
+\[
+\conpr{G(X) \in S}{ \priv = v }
+\]
+$\priv =v$ will be omitted from now on.
+\[
+=\conpr{F(X_{2}) \in S{2}}{ F(X_{1}) \in S_{1}} \cdot Pr[F(X_{1}) \in S_{1}]
+\]
+\begin{equation}
+=(\Sigma_{s_{1} \in S_{1}} \conpr{F(X_{2}) \in S{2}}{  F(X_{1}) = s_{1}} \cdot Pr[F(X_{1}) = s_{1}])\cdot Pr[F(X_{1}) \in S_{1}]
+\end{equation}
+We focus on $\conpr{F(X_{2}) \in S{2}}{  F(X_{1}) = s_{1}} $.
+\[
+\conpr{F(X_{2}) \in S{2}}{  F(X_{1}) = s_{1}} = \Sigma_{z} \conpr{F(X_{2}) \in S{2}}{  F(X_{1}) = s_{1}, \xup{2} =z} \cdot Pr [\xup{2} = z]
+\]
+\[
+= \Sigma_{z} \conpr{F(\xup{2}, \xbot{2}) \in S{2}}{ F(x_{11}, \xdown{1})=s_{1}, \xup{2}=z} \cdot Pr [\xup{2} = z]
+\]
+\[
+= \Sigma_{z} \conpr{F(\xup{2}, \xbot{2}) \in S{2}}{ F(x_{11}, \xup{2})=s_{1}, \xup{2}=z} \cdot Pr [\xup{2} = z]
+\]
+Given $\xup{2}=z$ and $\xbot{2}$ and $x_{11}$ are i.i.d. generated, functions $F(\xup{2}, \xbot{2})$ and $F(x_{11}, \xup{2})$ are independent with each other. Only $S_{2}$ depends on the value $s_{1}$. By the assumption that $F$ is $\cwp{F}$-CW private with simulator $sim_{F}$, we have
+\[
+\leq \Sigma_{z} (e^{\epsilon}  \conpr{sim_{F}(\alt{2}) \in S{2}}{ F(X_{1})=s_{1}, \xup{2}=z}+\delta) \cdot Pr [\xup{2} = z]
+\]
+\[
+=e^{\epsilon}  \conpr{sim_{F}(\alt{2}) \in S{2}}{ F(X_{1})=s_{1}}+\delta
+\]
+By equation (1), we have
+\[
+Pr [G(X) \in S] \leq e^{\epsilon}  Pr({sim_{F}(\alt{2}) \in S{2}}, { F(X_{1}) \in S_{1}})+\delta
+\]
+\begin{equation}
+=e^{\epsilon} \conpr{ F(X_{1}) \in S_{1}} {{sim_{F}(\alt{2}) \in S{2}}} \cdot Pr [{sim_{F}(\alt{2}) \in S{2}}] +\delta
+\end{equation}
+Similarly, $
+\conpr{ F(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) \in S{2}}=
+$
+\begin{equation}
+\Sigma_{s_{2}\in S_{2}} \conpr{ F(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) = s_{2}} \cdot Pr [sim_{F}(\alt{2}) = s_{2}]
+\end{equation}
+We focus on $\conpr{ F(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) = s_{2}}$, which equals to
+\[
+\Sigma_{z} \conpr{ F(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) = s_{2}, \xdown{1} =z} \cdot Pr[\xdown{1}=z]
+\]
+\[
+=\Sigma_{z} \conpr{ F(x_{11}, \xup{2}) \in S_{1}} {sim_{F}({\bf alt}(\xdown{1}, \xbot{2})) = s_{2}, \xdown{1} =z} \cdot Pr[\xdown{1}=z]
+\]
+Notice that $sim_{F}({\bf alt}\xdown{1}, \xbot{2}))$ can be seen a composite function $sim_{F} \circ {\bf alt}$ on $\xbot{2}$. Given $\xdown{1}=z$ and  that $\xbot{2}$ and $x_{11}$ are i.i.d. generated, functions $F(x_{11}, \xdown{1})$ and $sim_{F}({\bf alt}(\xdown{1}, \xbot{2}))$ are independent with each other. Only $S_{1}$ depends on the value $s_{2}$. By the assumption that $F$ is $\cwp{F}$-CW private with simulator $sim_{F}$, we have
+\[
+\leq (e^{\epsilon} \Sigma_{z} \conpr{ sim_{F}(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) = s_{2},\xdown{1} =z}+\delta) \cdot Pr[\xdown{1}=z]
+\]
+\[
+=e^{\epsilon} \conpr{ sim_{F}(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) = s_{2}}+\delta
+\]
+By equation (2) and (3), we have
+\[
+\conpr{ F(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) \in S{2}} \leq e^{\epsilon} \conpr{ sim_{F}(X_{1}) \in S_{1}} {sim_{F}(\alt{2}) \in S_{2}}+\delta
+\]
+and therefore
+\[
+Pr[G(X) \in S] \leq e^{2\epsilon} Pr[sim_{F} (\alt{1}) \in S_{1} , sim_{F} (\alt{2}) \in S_{2}] + 2\delta
+\]
+\item Assume it is true for $G_{t-1}(X)=(F(X_{1}) , \dots, F(X_{t-1}))$, we prove it holds for $G_{t}(X)$. For any set $S={S_{1}, S_{2}, \dots, S_{t}}$, we have
+\begin{equation}
+Pr[G_{t}(X) \in S] = \conpr{F(X_{t}) \in S_{t}}{ G_{t-1}(X) \in S_{-t}} \cdot Pr[ G_{t-1}(X) \in S_{-t}]
+\end{equation}
+By inductive assumption, we have
+\[
+Pr[ G_{t-1}(X) \in S_{-t}] \leq 
+\]
+\[
+e^{(t-1) \epsilon} Pr [(sim_{F}(\alt{1}) , \dots , sim_{F}(\alt{t-1})) \in S_{-t}] + (t-1)\delta
+\]
+We focus on $\conpr{F(X_{t}) \in S_{t}}{ G_{t-1}(X) \in S_{-t}}$, which equals to
+\[
+=\Sigma_{z} \conpr{F(X_{t}) \in S_{t}}{ G_{t-1}(X) \in S_{-t} , \xup{t}=z}\cdot Pr[\xup{t}=z]
+\]
+For any database $X_{i}$ where $1 \leq i \leq t-1$, that shares no common block with $X_{t}$, $F(X_{t})$ is independent with $F(X_{i})$. For the simplicity of analysis, we assume every $X_{i}$ has shared at least one common block with $X_{t}$. 
+\[
+\conpr{F(X_{t}) \in S_{t}}{ G_{t-1}(X) \in S_{-t} , \xup{t}=z} =
+\]
+\[
+\conpr{F(\xup{t}, \xbot{t}) \in S_{t}}{F(x_{11},\dots, x_{1(t-1), \xdownk{1}{t-1}}), \dots, F(x_{(t-1)1}, \xdown{t-1}) \in S_{-t}, \xup{t}=z}
+\]
+Given $\xup{t}=z$, each $F(X_{i})$ can be seen as a function on $\xupk{i}{t-i}=[x_{i1},\dots , x_{i(t-i)}]^{\top}$. Notice $x_{ij}=x_{i'j'}$ as long as $i+j=i'+j'$. Given $\xup{t}=z$, $G_{t-1}(X)$ is a function on $\xupk{1}{t-1}=[x_{11},\dots , x_{1(t-1)}]^{\top}$. Since $\xbot{t}$ is independent with each block in $\xupk{1}{t-1}$, functions $F(\xup{t}, \xbot{t})$ and $G_{t-1}(X)$ are independent with each other, given $\xup{t}=z$. Only $S_{t}$ depends on the value of $G_{t-1}(X)$. By the assumption that $F$ is $\cwp{F}$-CW private with simulator $sim_{F}$, we have
+\[
+\leq \Sigma_{z} (e^{\epsilon} \conpr{sim_{F} (\alt{t}) \in S_{t}}{G_{t-1}(X) \in S_{-t},  \xup{t}=z} + \delta)\cdot Pr[\xup{t}=z]
+\]
+\[
+=e^{\epsilon} \conpr{sim_{F} (\alt{t}) \in S_{t}}{G_{t-1}(X) \in S_{-t}} + \delta
+\]
+By equation (4), we have
+\begin{equation}
+Pr[G_{t}(X) \in S] \leq e^{\epsilon} Pr[ sim_{F} (\alt{t}) \in S_{t}, G_{t-1}(X) \in S_{-t}] + \delta
+\end{equation}
+We now focus on $Pr[ sim_{F} (\alt{t}) \in S_{t}, G_{t-1}(X) \in S_{-t}] $, which equals to
+\[
+=\conpr{F(X_{t-1}) \in S_{t-1}}{sim_{F} (\alt{t}) \in S_{t}, G_{t-2}(X) \in S_{-(t-1)}}
+\]
+\[
+\cdot Pr [sim_{F} (\alt{t}) \in S_{t}, G_{t-2}(X) \in S_{-(t-1)}]
+\]
+Similarly, we can show
+\[
+\conpr{F(X_{t-1}) \in S_{t-1}}{sim_{F} (\alt{t}) \in S_{t}, G_{t-2}(X) \in S_{-(t-1)}}
+\]
+\[
+\leq e^{\epsilon} \conpr{sim_{F}(\alt{t-1}) \in S_{t-1}}{sim_{F} (\alt{t}) \in S_{t}, G_{t-2}(X) \in S_{-(t-1)}}+\delta
+\]
+\end{enumerate}
+\end{document}

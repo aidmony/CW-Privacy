@@ -1,0 +1,130 @@
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+\usepackage{graphicx}
+\usepackage{comment}
+
+
+\input{macro}
+
+\title{Mechanisms as statistical experiments}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{Statistical Experiment and Blackwell's Theorem}
+We focus on the context with finite discrete states. The follows could be easily extended to the general setting.
+
+Let $\Omega = \{\omega_{1}, \dots, \omega_{n}\}$ be a finite set of states. Let $\Gamma =\{\gamma_{1}, \dots , \gamma_{m}\}$ be a finite set of experimental outcomes. 
+\begin{definition}
+An experiment is a probability measure from $\Omega$ to $\Gamma$. It is represented by an $n \times m$ Markov matrix $[P_{ij}]_{i\in [n]; \, j\in [m]}$, such that $\Sigma_{j=1}^{m} P_{ij} =1$ for all $i \in [n]$. $P_{ij}$ is the probability of observing outcome $\gamma_{j}$ in state $\omega_{i}$.
+\end{definition}
+
+A decision maker conducts experiments to solve decision problem in which the loss that the decision maker suffers depends on the current state. Let $A \in \mathbb{R}^{n}$ denote the set of decisions. Suppose $a \in A$, $a_{i}$ denote the loss of the decision maker if she chooses action $a$ in state $\omega_{i}$.
+
+Assume the decision maker first observes the outcome of the experiment $P$ and then choose an action from $A$. A decision rule maps outcomes of $P$ to elements in $A$. We describe such action decision by a $m \times n$ matrix $D$, where each row of $D$ is an element of $A$.
+
+Consider the $n \times n$ matrix $PD$. The diagonal elements of it describes the expected loss in each state $\omega_{i}$. Let $diag(PD)$ denote the vector of diagonal of $PD$, which is called ``risk vector" in literature. As $D$ varies over all possible decision rules, we define ``risk region" of experiment $P$ with actions $A$ as
+\[
+B(P,A) = \bigcup_{D} diag(PD)
+\]
+\begin{definition}
+Let P and Q be two experiments. Then P is more informative than Q, written as $P \supset Q$ if $B(Q, A) \subset  B(P, A)$ for all closed, bounded and convex subsets $A \in \mathbb{R}^{n}$
+\end{definition}
+
+\begin{definition}
+Let P and Q be two $n \times m1$ and $n \times m2$ Markov matrices corresponding to two experiments. P is sufficient for Q, denoted as $P \prec Q$, if there is an $m1 \times m2$ Markov matrix T such that $PT =Q$.
+\end{definition}
+
+\begin{theorem}
+[Blackwell's] Let P and Q be two experiments with the same set of actions. Then, $P \supset Q$ iff $P \prec Q$.
+\end{theorem}
+
+\section{Mechanisms as statistical experiments}
+
+\subsection{Case of DP}
+For an arbitrary set $S$ and two databases $x_{0}$, $x_{1}$, define $P_{FA} (x_{0}, x_{1}, M , S) = P(M(x_{0}) \in S)$ and $P_{MD} (x_{0}, x_{1}, M , S) = P(M(x_{1}) \in \bar{S})$. It is easy to see the following is an equivalent definition of DP.
+\begin{theorem}
+For any $\epsilon \geq 0$ and $\delta \in [0, 1]$, a database mechanism $M$ is $(\epsilon, \delta)$-differentially private if and only if the following conditions are satisfied for all pairs of neighboring databases $x_0$ and $x_1$, and all region $S \subseteq {\cal Y}$:
+\[
+P_{FA}(x_{0},x_{1},M,S)+e^{\epsilon}P_{MD}(x_{0},x_{1},M,S) \geq 1-\delta , \quad and
+\]
+\[
+e^{\epsilon}P_{FA}(x_{0},x_{1},M,S)+P_{MD}(x_{0},x_{1},M,S) \geq 1-\delta .
+\]
+\end{theorem}
+This gives a graphical representation (region) of DP:
+\[
+R(\epsilon, \delta) = \{(P_{MD},P+{FA}) \,|\, P_{FA}+e^{\epsilon}P_{MD} \geq1 - \delta,  e^{\epsilon}P_{FA}+P_{MD} \geq 1 - \delta\} .
+\]
+For any two databases $x_{0}$ and $x_{1}$, define
+\[
+R(M, x_{0}, x_{1}) = conv \{(P_{MD}(x_{0}, x_{1}, M, S), P_{FA}(x_{0}, x_{1}, M, S)) \,|\, \text{for all }S \subseteq {\cal Y} \}
+\] 
+Define $R(M) = \bigcup_{(x_{0}, x_{1})} R(M, x_{0}, x_{1}) $, where $(x_{0}, x_{1})$ is a pair of neighboring databases. It should not hard to see the following theorem.
+
+\begin{theorem}
+ $M$ is $(\epsilon, \delta)$-differentially private iff $R(M) \subseteq R(\epsilon, \delta) $.
+ \end{theorem}
+ 
+ Now, consider mechanism $M$ as a statistical experiment defined in section 1. 
+ 
+ Let ${\cal X} $ be the set of all databases. Let ${\cal Y}$ be the set of all out comes of mechanism $M$. $M$ is a probability measure from $\cal X$ to $\cal Y$. For simplicity of analysis, assume $|{\cal X}| =n $ and $|{\cal Y}|=m$. Then, we have a corresponding $n \times m$ Markov matrix $P_{M} =[P_{M0}, \dots , P_{M(n-1)}]^{\top}$.
+ 
+ First, we show $R(M) = B(M, A)$, where $A = [0,1]^{n}$. It is sufficient to show $R(M, x_{0}, x_{1}) = B(M, A)$ in the case of ${\cal X} = \{x_{0}, x_{1}\}$. Consider $S= \{y_{1}, y_{2}\}$. 
+ \[
+ (P_{MD}(x_{0}, x_{1}, M, S), P_{FA}(x_{0}, x_{1}, M, S))=
+ \]
+ \[
+ [P_{M0}, P_{M1}]^{\top} \cdot \begin{bmatrix}
+       1 &  0           \\[0.3em]
+       1 & 0           \\[0.3em]
+       0 & 1           \\[0.3em]
+       \dots           & \dots  \\[0.3em]
+       0           & 1
+     \end{bmatrix}
+ \]
+ Pick $A = [0,1]^{2}$, we have
+ \[R(M, x_{0}, x_{1})= \]
+ \[conv \{(P_{MD}(x_{0}, x_{1}, M, S), P_{FA}(x_{0}, x_{1}, M, S)) \,|\, \text{for all }S \subseteq {\cal Y} \} = B(M, A).\]
+ 
+ Second, consider two mechanisms $M_{1}$, $M_{2}$ with the same database space $\cal X$. If we have $M_{1} \prec M_{2}$, then we have the following Markov chain: $x - M_{1}(x) - M_{2}(x)$ for any $x \in {\cal X}$.
+ 
+\begin{theorem}
+Let two mechanisms $M_{1}$, $M_{2}$ have the same database space $\cal X$. Then, $R(M_{1}) \supset R(M_{2})$ iff $M_{1} \prec M_{2}$.
+\end{theorem}
+\subsection{Case of CW-P}
+In the case of CW-P, we can define $P_{FA}$ and $P_{MD}$ as before. The difference is that now each $X_{i}$ is a variable following some distribution $D_{i}$. For the simplicity of analysis, let's consider the case of DDP here. It follows that Theorem 2 and Theorem 3 still hold.
+
+Similarly, we show $R(M, X_{0}, X_{1}) = B(M, A)$ in the case of ${\cal X} = \{x_{0}, x_{1}\}$. Let the pmf of $X_{0}$ and $X_{1}$ be $f_{0}$ and $f_{1}$, where $f_{i}$ has the form $[p_{i0}, p_{i1}]$. Consider $S= \{y_{1}, y_{2}\}$.
+\[
+ (P_{MD}(X_{0}, X_{1}, M, S), P_{FA}(X_{0}, X_{1}, M, S))=
+ \]
+ \[
+ [f_{0}, f_{1}]^{\top} \cdot [P_{M0}, P_{M1}]^{\top} \cdot \begin{bmatrix}
+       1 &  0           \\[0.3em]
+       1 & 0           \\[0.3em]
+       0 & 1           \\[0.3em]
+       \dots           & \dots  \\[0.3em]
+       0           & 1
+     \end{bmatrix}
+ \]
+Notice that we can construct a new mechanism $M'$ with its corresponding Markov matrix being $ [f_{0}, f_{1}]^{\top} \cdot [P_{M0}, P_{M1}]^{\top}$. $M'$ has database space of size two, corresponding to $X_{0}$ and $X_{1}$. Pick $A=[0,1]^{2}$, we have $R(M) = B(M', A)$.
+
+By definition, CW-P consider the case when databases come from a set of distributions ${\cal D}=\{D_{0}, \dots, D_{t}\}$. Given mechanism $M$, it is easy to construct $M'$ as above with a database space of $\{X_{0} , \dots, X_{t} \}$. In fact, any two $M_{1}'$ and $M_{2}'$ w.r.t. mechanisms $M_{1}$ and $M_{2}$ will have the same database space, as long as $M_{1}$, $M_{2}$ consider the same set of database distribution $\cal D$. 
+
+Let $P_{D}= [f_{t}, \dots, f_{t}]^{\top}$, where $f_{i}$ denote the pmf of $D_{i}$. We can compute the Markov matrix of $M'$ as follows.
+\[
+[P_{M'}] = [P_{D}] \cdot [P_{M}]
+\]
+\begin{lemma}
+Let two mechanisms $M_{1}$, $M_{2}$ have the same set of distributions on databases $\cal D$. Then, $M_{1} \prec M_{2}$ iff $M_{1}' \prec M_{2}'$.
+\end{lemma}
+\begin{theorem}
+Let two mechanisms $M_{1}$, $M_{2}$ have the same set of distributions on databases $\cal D$. Then, $R(M_{1}) \supset R(M_{2})$ iff $M_{1} \prec M_{2}$.
+\end{theorem}
+\end{document}

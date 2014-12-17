@@ -1,0 +1,246 @@
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+\usepackage{graphicx}
+\usepackage{comment}
+
+
+\input{macro}
+
+\title{Composition Theorem for streaming CW-pricacy}
+\date{}
+\begin{document}
+\maketitle
+
+{\bf Problem setting} \\
+Let $X$ be a database in the streaming setting. Let $X_{k}$ represent the portion of $X$ that is currently held at time step $i$. We assume that at each time step, a fraction of $c$ of the database is replaced. We assume the oldest rows are always the ones replaced, and that $X$ has row drown i.i.d. from some distribution $D$. Let $n$ be the size of each $X_{k}$. This means that the first $n$ rows of $X$ constitute $X_{1}$, rows $cn+1$ through $cn+n$ constitute $X_{2}$, and so forth. $X$ has size $n+cn(t-1)$, where $t$ is the total number of time steps being considered. $1/c$ is the total number of time steps a given row will be present for. See (1) and (2) in Figure~\ref{stream_db1}. 
+\\
+\\
+{\bf Notations and definitions}\\
+For each $X_k$ of size $n$, we represent it by $1/c$ blocks (each has $cn$ rows). Namely, let $X_{k}=\xblock{k}$, where $X_{kj}$ denote the $j$th block in $X_{k}$. Let $\xdown{k} = [X_{k 2} , \dots, X_{k \frac{1}{c}}]^{\top}$ and $\xup{k} = [X_{k 1}, X_{k2} , \dots, X_{k (\frac{1}{c}-1)}]^{\top}$. Namely, $\xdown{k}$ represent the bottom $(1/c -1)$ blocks of $X_{k}$ while $\xup{k}$ represent the top $(1/c-1)$ blocks of $X_{k}$.
+\\
+\\
+{\bf Assumptions }\\
+\begin{enumerate}
+\item Each row $x_{j}$ in database $X$ follows the following i.i.d. distribution
+\[ f(x; p) = \left\{ 
+  \begin{array}{l l}
+    p & \quad \text{if $x=1$}\\
+    1-p & \quad \text{if $x=-1$}
+  \end{array} \right.\]
+ \item We consider sum function $M$.
+ \item We consider the case of DDP with auxiliary information. $X \sim X'$ denotes a pair of neighboring databases, such that in $X'$ the private row $x_{i}$ is always set to $-1$. The auxiliary information is $\xdown{k}$ for each database $X_{k}$.
+\end{enumerate}
+
+{\bf Preliminaries}\\
+\begin{enumerate}
+\item Consider the distribution of $\Sigma_{j=1}^{n} x_{j}$, with $f_{(n;p)}$ representing its pmf. It is obvious that $f_{(n;p)}$ has integer supports $\{-n, -n+2 , \dots , n-2, n\}$. Notice that $f_{(n;p)} = y$ if and only if there are $(y+n)/2$ many $x_{j}=1$.
+\begin{equation}
+f_{(n;p)}(y) = {n \choose (n+y)/2} p^{(n+y)/2} (1-p)^{(n-y)/2}
+\end{equation} 
+\item Consider two functions $\frac{f_{(n;p)}(y+1)}{f_{(n;p)}(y-1)}$ and its reverse $\frac{f_{(n;p)}(y-1)}{f_{(n;p)}(y+1)}$, where $y \in \{-n-1, -n+1 , \dots , n-1, n+1\}$. We have $\frac{f_{(n;p)}(y+1)}{f_{(n;p)}(y-1)}= \frac{(n+1+y)p}{(n+1-y)(1-p)}$. 
+Given $|y| \leq \beta$, both $\frac{(n+1+y)}{(n+1-y)}$ and $\frac{(n+1-y)}{(n+1+y)}$ will be  $\leq  \frac{(n+1+\beta)}{(n+1-\beta)}$. Let $g_{(n;p)}(y) = \log ( \frac{n+1+|y|}{n+1-|y|} \cdot \max \{\frac{p}{1-p}, \frac{1-p}{p} \})$.
+\item By the Chernoof's inequality, its cdf $F_{(n;p)}(\beta) = Pr [y \geq \beta] $ has the following tail bound.
+\begin{equation}
+F_{(n;p)}(\beta) \leq h_{(n;p)}(\beta)
+\end{equation}
+\end{enumerate}
+
+\begin{theorem}
+For any $X_{k}$ and an arbitrary $\beta >0$, $M(X_{k})$  is $(\epsilon(\beta), \delta(\beta),  \Delta)$-DDP, where $\epsilon(\beta)= g_{(cn ; p)}(\beta)$, $\delta(\beta)=h_{(cn-1; p)}(\beta-1) + h_{(cn-1; 1-p)}(\beta-1)$ and $\Delta$ has the auxiliary information of $\xdown{k}=z$.
+\end{theorem}
+{\bf Proof.} Pick an arbitrary $\beta >0$. 
+
+First, We show that for all $y$ such that $|y- M(z)| \leq \beta$, $\conpr{M(X_{k} = y)}{\xdown{k}=z} \leq e^{\epsilon (\beta)} \conpr{M(X_{k}' = y)}{\xdown{k}=z} $. 
+\[
+\frac{\conpr{M(X_{k} = y)}{\xdown{k}=z}}{\conpr{M(X_{k}' = y)}{\xdown{k}=z} } = \frac{f_{(cn-1 ; p)} (y - M(z) - x_{i})}{f_{(cn-1 ; p)} (y - M(z) +1)}
+\] 
+It is trivial when $x_{i}=-1$. Consider the case when $x_{i} =1$. Then,
+\[
+ \frac{f_{(cn-1 ; p)} (y - M(z) - x_{i})}{f_{(cn-1 ; p)} (y - M(z) +1)} = \frac {(cn- (y-M(z))(1-p)}{(cn+(y- M(z))p} \leq \frac {(cn + \beta)(1-p)}{(cn- \beta)p}
+\]
+\[
+\leq e^{g_{(cn ; p)} (\beta)} =e^{\epsilon(\beta)}
+\]
+
+Next, we show $\conpr{|y-M(z)| > \beta}{\xdown{k}=z} \leq \delta(\beta)$. Since $y- M(z) = M(X_{k1} + x_{i})$, we have
+\[
+\conpr{|y-M(z)| > \beta}{\xdown{k}=z} = Pr[{|M(X_{k1}+ x_{i})| > \beta}]
+\]
+\[
+\leq Pr[{|M(X_{k1}| > \beta -1}] = h_{(cn-1; p)}(\beta-1) + h_{(cn-1; 1-p)}(\beta-1)
+\]
+\[
+=\delta(\beta)
+\]
+From the above, it can be easily shown that for any set $S$ and an arbitrary $\beta >0$,
+\[
+\conpr{M(X_{k} \in S)}{\xdown{k}=z} \leq e^{\epsilon (\beta)} \conpr{M(X_{k}' \in S)}{\xdown{k}=z} + \delta(\beta)
+\]
+The other direction is similar. $\blacksquare$
+
+\begin{theorem}
+For any $X_{1}, X_{2}$ and arbitrary $\beta_{1}, \beta_{2} >0$, $G(X)= ( M(X_{1}), M(X_{2}) )$ is $(\epsilon_{2}(\beta_{1}, \beta_{2}), \delta_{2}(\beta_{1}, \beta_{2}), \Delta)$-DDP, where $\epsilon_{2}(\beta_{1}, \beta_{2})=\epsilon(\beta_{1}+\beta_{2})$, $\delta_{2}(\beta_{1}, \beta_{2}) = \max \{ \delta(\beta_{1}+\beta_{2}+1)+ \delta(\beta_{2}) ,  \delta(\beta_{1}+\beta_{2})+ \delta(\beta_{2}+1) \}$ and $\Delta$ has the auxiliary information of $\xdown{2}=z$.
+\end{theorem}
+{\bf Proof.} Let $z = [\hat {z} , z^{\#}]^{\top}$, where $\hat {z} = [X_{22}, \dots , X_{2 \frac{1}{c}-1}]^{\top}$ and $z^{\#} = X_{2\frac{1}{c}}$. Pick arbitrary $\beta_{1}, \beta_{2} >0$. 
+
+First, we show for all $y_{1}$ such that $|y_{1} - M(\hat{z})| \leq \beta_{1}$, and all $y_{2}$ such that $|y_{2} - M(z)| \leq \beta_{2}$, we have
+\[
+\conpr{G(X) = (y_{1}, y_{2})}{\xdown{2}=z} \leq e^{ \epsilon(\beta_{1}+\beta_{2})  } \conpr{G(X') = (y_{1}, y_{2})}{\xdown{2}=z}.
+\]
+Consider the ratio
+\[
+\frac{\conpr{G(X) = (y_{1}, y_{2})}{\xdown{2}=z}}{\conpr{G(X') = (y_{1}, y_{2})}{\xdown{2}=z}}
+\]
+\begin{equation}\label{ratio}
+=\frac{\Sigma_{M(z^{*})} \conpr{M(X_{1} = y_{1})}{z, M(z^{*})} \cdot \conpr{M(X_{2}=y_{2})}{M(z^{*}), z} \cdot Pr[M(X_{21}) = M(z^{*}))] }{\Sigma_{M(z^{\$})} \conpr{M(X_{1}' = y_{1})}{z, M(z^{\$})} \cdot \conpr{M(X_{2}'=y_{2})}{M(z^{\$}), z} \cdot Pr[M(X_{21}') = M(z^{\$}))]}
+\end{equation}
+Consider the two cases on the position of private row $x_{i}$.
+\begin{enumerate}
+\item $x_{i} \in X_{21}$. The middle term $\conpr{M(X_{2}=y_{2})}{M(z^{*}), z} =1$ if only if $M(z^{*}) = y_{2} - M(z)-x_{i})$ (Similarly, $M(z^{\$}) = y_{2} - M(z)+1)$). Equation~\ref{ratio} can be simplified as the follows.
+\[
+\frac {\conpr{(M(X_{1})= y_{1})}{z, M(X_{21}) = y_{2}-M(z)-x_{i}} \cdot Pr [M(X_{21} = y_{2} - M(z)-x_{i})]}{\conpr{(M(X_{1}')= y_{1})}{z, M(X_{21}') = y_{2}-M(z)+1} \cdot Pr [M(X_{21}' = y_{2} - M(z)+1)]}
+\]
+\[
+=\frac{Pr[{M(X_{11}= y_{1} - y_{2} + M(z^{\#}))}] \cdot Pr [M(X_{21} = y_{2} - M(z)-x_{i})]}{Pr[{M(X_{11}'= y_{1} - y_{2} + M(z^{\#}))}] \cdot Pr [M(X_{21}' = y_{2} - M(z)+1)]}
+\]
+\[
+=\frac{ Pr [M(X_{21} = y_{2} - M(z)-x_{i})]}{Pr [M(X_{21}' = y_{2} - M(z)+1)]}
+\]
+The last equality comes from the fact that $X_{11}= X_{11}'$ in this case. By the conclusion in Theorem 1, we have
+\[
+\frac{Pr [M(X_{21} = y_{2} - M(z)-x_{i})]}{Pr [M(X_{21}' = y_{2} - M(z)+1)]} \leq e^{\epsilon(\beta_{2})}.
+\]
+\item $x_{i} \in X_{11}$. The middle term $\conpr{M(X_{2}=y_{2})}{M(z^{*}), z} =1$ if only if $M(z^{*}) = y_{2} - M(z))$ (Similarly, $M(z^{\$}) = y_{2} - M(z))$). Equation~\ref{ratio} can be simplified as the follows.
+\[
+\frac {\conpr{(M(X_{1})= y_{1})}{z, M(X_{21}) = y_{2}-M(z)} \cdot Pr [M(X_{21} = y_{2} - M(z))]}{\conpr{(M(X_{1}')= y_{1})}{z, M(X_{21}') = y_{2}-M(z)} \cdot Pr [M(X_{21}' = y_{2} - M(z))]}
+\]
+\[
+=\frac{Pr[{M(X_{11}= y_{1} - y_{2} + M(z^{\#}) - x_{i})}] }{Pr[{M(X_{11}'= y_{1} - y_{2} + M(z^{\#})+1)}] }
+\]
+The first equality comes from the fact that $X_{21}= X_{21}'$ in this case. The second equality comes from the fact that $M(X_{11}+X_{21}+\hat{z}+x_{i}) =y_{1}$ (Similarly, $M(X_{11}'+X_{21}'+\hat{z}-1) =y_{1}$).
+
+Notice that $|y_{1} - y_{2} + M(z^{\#})| = |y_{1} - M(\hat{z}) - (y_{2} - M(z))| \leq |y_{1} - M(\hat{z})| + |y_{2} - M(z)) |$. Since $|y_{1} - M(\hat{z})| \leq \beta_{1}$ and $|y_{2} - M(z)| \leq \beta_{2}$, we have $|y_{1} - y_{2} + M(z^{\#})| \leq \beta_{1}+ \beta_{2}$. By the conclusion in Theorem 1, we have
+\[
+\frac{Pr[{M(X_{11}= y_{1} - y_{2} + M(z^{\#}) - x_{i})}] }{Pr[{M(X_{11}'= y_{1} - y_{2} + M(z^{\#})+1)}] } \leq e^{\epsilon(\beta_{1}+\beta_{2})}.
+\]
+\end{enumerate}
+Function $\epsilon$ is monotonically increasing. Hence, we have
+\[
+\frac{\conpr{G(X) = (y_{1}, y_{2})}{\xdown{2}=z}}{\conpr{G(X') = (y_{1}, y_{2})}{\xdown{2}=z}} \leq e^{\epsilon(\beta_{1}+\beta_{2})}.
+\]
+Next, we show that the probability of $(y_{1}, y_{2}) $ {\it does not} fall in the ``good region" is at most
+\[
+\max \{ \delta(\beta_{1}+\beta_{2}+1)+ \delta(\beta_{2}) ,  \delta(\beta_{1}+\beta_{2})+ \delta(\beta_{2}+1) \}.
+\] 
+
+Consider the probability that $(y_{1}, y_{2}) $ {\it does} fall in the `good region" is $\leq \delta(\beta_{1}+\beta_{2})+ 2\delta(\beta_{2})$. 
+\begin{equation}\label{tail}
+\conpr{|y_{1} - \hat{z}| \leq \beta_{1}, |y_{2} - M(z)| \leq \beta_{2}}{\xdown{2} = z}
+\end{equation}
+\[
+=\Sigma_{M(z^{*})} \conpr{|y_{1} - \hat{z}| \leq \beta_{1}}{ M(X_{21}=z^{*}),\xdown{2} = z} \cdot \conpr{|y_{2} - M(z)| \leq \beta_{2}}{M(X_{21})=z^{*},\xdown{2} = z} 
+\]
+\[
+\cdot Pr [M(X_{21}) = M(z^{*})]
+\]
+Again, we discuss the two cases on the position of private row $x_{i}$.
+\begin{enumerate}
+\item $x_{i} \in X_{21}$. Then, the middle term $\conpr{|y_{2} - M(z)| \leq \beta_{2}}{M(X_{21})=z^{*},\xdown{2} = z}  $
+\[ = \left\{ 
+  \begin{array}{l l}
+    1 & \quad \text{if $|M(z^{*})+x_{i}| \leq \beta_{2})$ }\\
+    0 & \quad \text{otherwise}
+  \end{array} \right.\]
+  The above summation can be simplified by only considering the terms such that $|M(X_{21})+x_{i}| \leq \beta_{2}$. We make a little relaxation and get the following lower bound.
+\[
+\geq \Sigma_{M(z^{*}): |M(z^{*})| \leq \beta_{2}-1}  \conpr{|y_{1} - \hat{z}| \leq \beta_{1}}{ M(X_{21}=z^{*}),\xdown{2} = z} \cdot Pr [M(X_{21}) = M(z^{*})]
+\]
+Notice that $\conpr{|y_{1} - \hat{z}| \leq \beta_{1}}{ M(X_{21})=M(z^{*}),\xdown{2} = z}  = \conpr{|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}}{M(X_{21})=M(z^{*})}$. If $|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}$ and $|M(X_{21})+x_{i}| \leq \beta_{2}$, then $|M(X_{11}) | \leq \beta_{1}+\beta_{2}$. Hence, we have the following inequality.
+\[
+\conpr{|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}}{M(X_{21})=M(z^{*})} 
+\]
+\[
+\geq \conpr{|M(X_{11}) | \leq \beta_{1}+\beta_{2}}{M(X_{21})=M(z^{*})}=Pr [|M(X_{11}) | \leq \beta_{1}+\beta_{2}]
+\]
+Therefore, we have the expression in equation~\ref{tail}
+\[
+ \geq Pr [|M(X_{11}) | \leq \beta_{1}+\beta_{2}] \cdot \Sigma_{M(z^{*}): |M(z^{*})| \leq \beta_{2}-1}  Pr [M(X_{21}) = M(z^{*})]
+\]
+\[
+=Pr [|M(X_{11}) | \leq \beta_{1}+\beta_{2}]  \cdot Pr [|M(X_{21})| \leq \beta_{2}-1]
+\]
+By the discussion in Theorem 1, we have
+\[
+Pr [|M(X_{11}) | \leq \beta_{1}+\beta_{2}] = 1-  Pr [|M(X_{11}) | > \beta_{1}+\beta_{2}] \geq 1 - \delta (\beta_{1}+\beta_{2}+1),
+\]
+and that 
+\[
+Pr [|M(X_{21})| \leq \beta_{2}-1] = 1 - Pr [|M(X_{21})| > \beta_{2}-1] \geq 1 - \delta (\beta_{2}).
+\]
+Hence, the probability that $(y_{1}, y_{2})$ falls in the ``good region" is at least 
+\[
+(1 - \delta (\beta_{1}+\beta_{2}+1))(1 - \delta (\beta_{2})) > 1 - \delta (\beta_{1}+\beta_{2}+1) - \delta (\beta_{2}).
+\]
+It follows that the probability that $(y_{1}, y_{2})$ does not fall in the ``good region" is
+\[
+< \delta (\beta_{1}+\beta_{2}+1) + \delta (\beta_{2}).
+\]
+\item $x_{i} \in X_{11}$. Then, the middle term $\conpr{|y_{2} - M(z)| \leq \beta_{2}}{M(X_{21})=z^{*},\xdown{2} = z}  $
+\[ = \left\{ 
+  \begin{array}{l l}
+    1 & \quad \text{if $|M(z^{*})| \leq \beta_{2})$ }\\
+    0 & \quad \text{otherwise}
+  \end{array} \right.\]
+  The above summation can be simplified by only considering the terms such that $|M(X_{21}) | \leq \beta_{2}$. 
+  \[
+ =\Sigma_{M(z^{*}): |M(z^{*})| \leq \beta_{2}}  \conpr{|y_{1} - \hat{z}| \leq \beta_{1}}{ M(X_{21}=z^{*}),\xdown{2} = z} \cdot Pr [M(X_{21}) = M(z^{*})]
+\]
+Notice that $\conpr{|y_{1} - \hat{z}| \leq \beta_{1}}{ M(X_{21})=M(z^{*}),\xdown{2} = z}  = \conpr{|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}}{M(X_{21})=M(z^{*})}$. If $|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}$ and $|M(X_{21})| \leq \beta_{2}$, then $|M(X_{11}) + x_{i}| \leq \beta_{1}+\beta_{2}$. Hence, we have the following inequality.
+\[
+\conpr{|M(X_{11)}+M(X_{21})+x_{i}| \leq \beta_{1}}{M(X_{21})=M(z^{*})} 
+\]
+\[
+\geq \conpr{|M(X_{11}+x_{i}) | \leq \beta_{1}+\beta_{2}}{M(X_{21})=M(z^{*})}=Pr [|M(X_{11}+x_{i}) | \leq \beta_{1}+\beta_{2}]
+\]
+Therefore, we have the expression in equation~\ref{tail}
+\[
+ \geq Pr [|M(X_{11}+x_{i}) | \leq \beta_{1}+\beta_{2}] \cdot \Sigma_{M(z^{*}): |M(z^{*})| \leq \beta_{2}}  Pr [M(X_{21}) = M(z^{*})]
+\]
+\[
+=Pr [|M(X_{11}+x_{i}) | \leq \beta_{1}+\beta_{2}]  \cdot Pr [|M(X_{21})| \leq \beta_{2}]
+\]
+By the discussion in Theorem 1, we have
+\[
+Pr [|M(X_{11})+x_{i} | \leq \beta_{1}+\beta_{2}] = 1-  Pr [|M(X_{11})+x_{i} | > \beta_{1}+\beta_{2}] \]
+\[
+\geq 1-  Pr [|M(X_{11}) | > \beta_{1}+\beta_{2}-1] \geq 1 - \delta (\beta_{1}+\beta_{2}),
+\]
+and that 
+\[
+Pr [|M(X_{21})| \leq \beta_{2}] = 1 - Pr [|M(X_{21})| > \beta_{2}] \geq 1 - \delta (\beta_{2}+1).
+\]
+Hence, the probability that $(y_{1}, y_{2})$ falls in the ``good region" is at least 
+\[
+(1 - \delta (\beta_{1}+\beta_{2}))(1 - \delta (\beta_{2}+1)) > 1 - \delta (\beta_{1}+\beta_{2}) - \delta (\beta_{2}+1).
+\]
+It follows that the probability that $(y_{1}, y_{2})$ does not fall in the ``good region" is
+\[
+< \delta (\beta_{1}+\beta_{2}) + \delta (\beta_{2}+1).
+\]
+
+\end{enumerate}
+
+From the above two, it can be easily shown that for any two sets $S_{1}, S_{2}$ and arbitrary $\beta_{1}, \beta_{2}> 0$, 
+\[
+\conpr{G(X) \in (S_{1}, S_{2})}{\xdown{2}=z} \leq e^{\epsilon(\beta_{1}+\beta_{2})} \conpr{G(X') \in (S_{1}, S_{2})}{\xdown{2}=z} 
+\]
+\[
++ \max \{ \delta(\beta_{1}+\beta_{2}+1)+ \delta(\beta_{2}) ,  \delta(\beta_{1}+\beta_{2})+ \delta(\beta_{2}+1) \}.
+\]
+The other direction is similar. $\blacksquare$
+\end{document}

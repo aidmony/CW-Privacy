@@ -1,0 +1,75 @@
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+\usepackage{graphicx}
+\usepackage{comment}
+
+
+\input{macro}
+
+\title{CMSC701 Final}
+\author{Yi Qian}
+\date{\today}
+\begin{document}
+\maketitle
+{\bf Problem 1.} 
+\begin{enumerate}
+\item For string $S$ of length $n$, it can have at most $\lfloor n/2 \rfloor$ uncontained repeats.
+\item An internal node $v$ of the suffix tree of S represents an uncontained repeat if and only there is no suffix link maps to it. 
+
+{\bf Proof.} ($\Leftarrow$) First, since $v$ is an internal node, it has at least $2$ children. Hence, there are at least $2$ different suffix starts with $v$. Second, we know there is no substring that contains $v$, because otherwise there will be a suffix link maps to $v$.
+
+($\Rightarrow$) The other direction is similar. $\blacksquare$
+\item 
+\begin{enumerate}
+\item Construct the suffix tree $T$ of $S$.
+\item Traverse $T$ in a DFS manner and return all unmapped internal nodes in $T$.
+\end{enumerate}
+The correctness of the algorithm follows part (2). The running time of the algorithm is obvious.
+\end{enumerate}
+
+{\bf Problem 2.}
+
+The solution here answers both (1) and (2).
+
+Define $V[i,j]$ to be the score of the best fold of substring $S[i \dots j]$.
+
+Define $C[i,j]$ to be the number of consecutive matches .
+
+{\bf Problem 3.}
+
+The algorithm follows a greedy fashion. Intuitively, in each step it find stwo bins from A and B with the minimum equal sum.
+\begin{enumerate}
+\item BinPacking(A, B)
+\item For $i = 1: n$:
+\item $\quad$ Pick bin $A_{i}=A[1 \dots i]$. Compute its sum $S_{A_{i}}$.
+\item $\quad$ For $j=1 : m$:
+\item $\quad \quad$ Pick bin $B_{j}=B[1 \dots j]$. Compute its sum $S_{B_{j}}$
+\item $\quad \quad$ If $S_{A_{i}} = S_{B_{j}}$: 
+\item $\quad \quad \quad$ Return $\{(A_{i}, B_{i})\} \cup $ BinPacking(A[i+1 \dots n], B[j+1 \dots m])
+\item $\quad \quad$ If $S_{A_{i}} < S_{B_{j}}: $ 
+\item $\quad \quad \quad$ Break  //continue the loop at line 2 
+\end{enumerate}
+The running time of algorithm in the worst case is $O(nm)$. 
+
+{\bf Correctness Proof. } Assume by contradiction that there is a better solution $O'$ for $(A,B)$ than $O$ given by the above algorithm. Assume without losing generality that the first pair of bins in $O$ and $O'$ differ. Since the first pair of bins in $O$, $(A_{1}, B_{1}$, is of minimum possible sum, the first pair of bins in $O'$, $(A_{1}', B_{1}'$, has a larger sum. But then $(A_{1}', B_{1}')$ can be further divided into two bins $(A_{1}, B_{1})$ and $(A_{1}' -A_{1}, B_{1}'-B_{1})$. Contradiction. $\blacksquare$
+
+{\bf Problem 4}
+
+The following algorithm deals with the case when there is no sequencing error. Let $R$ denote the read.
+\begin{enumerate}
+\item Construct the suffix tree $T$ of the genome
+\item Compare $R$ with every suffix of $T$. If the read matches the prefix of one of the suffix, return the suffix and the read is break-point free.
+\item For $i= 1: m-1$:
+\item $\quad$ Compare both $R[1 \dots i]$ and $R[i+1 \dots i]$ with every suffix of $T$. 
+\item $\quad$ If they both match the prefixes of some suffixes, return them and the break-point $i$.
+\end{enumerate}
+In each exact matching, the algorithm does at most $m$ comparisons. There are in total $n$ suffix string and $m$ possible break-points. Hence, in total it takes $O(nm^{2})$ comparisons in the worst case.
+
+{\bf Problem 5. }
+
+\end{document}
